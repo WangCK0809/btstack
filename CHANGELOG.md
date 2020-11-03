@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - SM: set LinkKey flag to request CTKD if enabled
 - SM: store CTKD key with Public Identity Address
 - SM: only allow CTKD to overwrite existing link key if derived key has same or higher authentication
-- SM: sending Security Request by Responder starts SMP Timeout 
+- SM: start SMP Timeout when sending Security Request
 - HFP HF: fix response to AG Codec Selection while waiting for OK of parallel command
 - HCI: fix reject of LE remote connection param request via HCI
 
@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - SM: Cross-Transport Key Derivation requires `ENABLE_CROSS_TRANSPORT_KEY_DERIVATION` now
 - SM: disconnect if encryption enable fails for bonded devices as Central
-- GATT Client: drop notifications/indications as Central until IRK and re-encryption are complete, or if 
+- GATT Client: drop notifications/indications until IRK and re-encryption are complete, or if 
     connection is not encrypted although bonding information is available
 
 ## Changes September 2020
