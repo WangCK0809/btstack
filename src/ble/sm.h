@@ -47,6 +47,11 @@ extern "C" {
 #include "btstack_defines.h"
 #include "hci.h"
 
+// Map ENABLE_LE_CENTRAL_AUTO_ENCRYPTION to new ENABLE_LE_PROACTIVE_AUTHENTICATION
+#ifdef ENABLE_LE_CENTRAL_AUTO_ENCRYPTION
+#define ENABLE_LE_PROACTIVE_AUTHENTICATION
+#endif
+
 typedef struct {
     btstack_linked_item_t  item;
     bd_addr_t      address;

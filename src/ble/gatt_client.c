@@ -712,7 +712,7 @@ static uint8_t * setup_long_characteristic_value_packet(uint8_t type, hci_con_ha
 
 // test if notification/indication should be delivered to application (BLESA)
 static bool gatt_client_accept_server_message(hci_con_handle_t con_handle){
-#ifdef ENABLE_LE_CENTRAL_AUTO_ENCRYPTION
+#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
 	// only check as Central
 	if (gap_get_role(con_handle) == HCI_ROLE_SLAVE) return true;
 
