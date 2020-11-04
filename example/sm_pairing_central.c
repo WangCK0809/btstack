@@ -196,13 +196,20 @@ static void hci_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *p
             if (hci_event_le_meta_get_subevent_code(packet) != HCI_SUBEVENT_LE_CONNECTION_COMPLETE) break;
             con_handle = hci_subevent_le_connection_complete_get_connection_handle(packet);
             printf("Connection complete\n");
+
             // start pairing
-            sm_request_pairing(con_handle);
-//             gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
+            // sm_request_pairing(con_handle);
+
+            // start GATT query
+            gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
+
             break;
         case HCI_EVENT_ENCRYPTION_CHANGE: 
             con_handle = hci_event_encryption_change_get_connection_handle(packet);
             printf("Connection encrypted: %u\n", hci_event_encryption_change_get_encryption_enabled(packet));
+            break;
+        case GATT_EVENT_QUERY_COMPLETE:
+            printf("GATT_EVENT_QUERY_COMPLETE status 0x%02x\n", gatt_event_query_complete_get_att_status(packet));
             break;
         default:
             break;
