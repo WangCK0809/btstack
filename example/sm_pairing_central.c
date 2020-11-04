@@ -130,12 +130,12 @@ static void sm_pairing_central_setup(void){
     // sm_set_secure_connections_only_mode(true);
 
     // LE Secure Connections, Just Works
-     sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
-     sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION | SM_AUTHREQ_BONDING);
+//     sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
+//     sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION | SM_AUTHREQ_BONDING);
 
     // LE Secure Connections, Numeric Comparison
-//    sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
-//    sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION|SM_AUTHREQ_MITM_PROTECTION);
+    sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
+    sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION|SM_AUTHREQ_MITM_PROTECTION|SM_AUTHREQ_BONDING);
 
     // LE Secure Pairing, Passkey entry initiator (us) enters, responder displays
     // sm_set_io_capabilities(IO_CAPABILITY_KEYBOARD_ONLY);
