@@ -98,6 +98,9 @@ static void sm_pairing_central_setup(void){
     // setup ATT server
     att_server_init(profile_data, NULL, NULL);
 
+    // init GATT Client
+    gatt_client_init();
+
     /**
      * Choose ONE of the following configurations
      * Bonding is disabled to allow for repeated testing. It can be enabled by or'ing
@@ -127,12 +130,12 @@ static void sm_pairing_central_setup(void){
     // sm_set_secure_connections_only_mode(true);
 
     // LE Secure Connections, Just Works
-    // sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
-    // sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION);
+     sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
+     sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION | SM_AUTHREQ_BONDING);
 
     // LE Secure Connections, Numeric Comparison
-    sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
-    sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION|SM_AUTHREQ_MITM_PROTECTION);
+//    sm_set_io_capabilities(IO_CAPABILITY_DISPLAY_YES_NO);
+//    sm_set_authentication_requirements(SM_AUTHREQ_SECURE_CONNECTION|SM_AUTHREQ_MITM_PROTECTION);
 
     // LE Secure Pairing, Passkey entry initiator (us) enters, responder displays
     // sm_set_io_capabilities(IO_CAPABILITY_KEYBOARD_ONLY);
@@ -168,7 +171,7 @@ static void hci_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *p
         case BTSTACK_EVENT_STATE:
             // BTstack activated, get started
             if (btstack_event_state_get_state(packet) == HCI_STATE_WORKING){
-                printf("Start scaning!\n");
+                printf("Start scanning!\n");
                 gap_set_scan_parameters(1,0x0030, 0x0030);
                 gap_start_scan(); 
             }
@@ -195,6 +198,7 @@ static void hci_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *p
             printf("Connection complete\n");
             // start pairing
             sm_request_pairing(con_handle);
+//             gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
             break;
         case HCI_EVENT_ENCRYPTION_CHANGE: 
             con_handle = hci_event_encryption_change_get_connection_handle(packet);
