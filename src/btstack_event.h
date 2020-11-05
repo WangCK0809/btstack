@@ -3022,6 +3022,27 @@ static inline uint8_t sm_event_pairing_complete_get_reason(const uint8_t * event
 }
 #endif
 
+#ifdef ENABLE_BLE
+/**
+ * @brief Get field handle from event SM_EVENT_REENCRYPTION_COMPLETE
+ * @param event packet
+ * @return handle
+ * @note: btstack_type H
+ */
+static inline hci_con_handle_t sm_event_reencryption_complete_get_handle(const uint8_t * event){
+    return little_endian_read_16(event, 2);
+}
+/**
+ * @brief Get field status from event SM_EVENT_REENCRYPTION_COMPLETE
+ * @param event packet
+ * @return status
+ * @note: btstack_type 1
+ */
+static inline uint8_t sm_event_reencryption_complete_get_status(const uint8_t * event){
+    return event[4];
+}
+#endif
+
 /**
  * @brief Get field handle from event GAP_EVENT_SECURITY_LEVEL
  * @param event packet

@@ -1298,6 +1298,16 @@ typedef uint8_t sm_key_t[16];
   */
 #define SM_EVENT_PAIRING_COMPLETE                                0xDC
 
+/**
+ * @brief Proactive Authentication for bonded devices complete. Possible status values:
+ *         ERROR_CODE_SUCCESS                           -> connection secure
+ *         ERROR_CODE_CONNECTION_TIMEOUT                -> timeout
+ *         ERROR_CODE_AUTHENTICATION_FAILURE            -> remote did not provide LTK locally
+ * @format H1
+ * @param handle
+ * @param status
+ */
+#define SM_EVENT_REENCRYPTION_COMPLETE                           0xDD
 
 // GAP
 
