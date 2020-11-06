@@ -745,7 +745,7 @@ static void sm_notify_client_status_reason(sm_connection_t * sm_conn, uint8_t st
     sm_dispatch_event(HCI_EVENT_PACKET, 0, (uint8_t*) &event, sizeof(event));
 }
 
-static void sm_notify_client_reencryption(sm_connection_t * sm_conn, uint8_t status){
+static void sm_notify_client_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
     uint8_t event[5];
     event[0] = SM_EVENT_REENCRYPTION_COMPLETE;
     event[1] = sizeof(event) - 2;
@@ -3473,7 +3473,7 @@ static void sm_event_packet_handler (uint8_t packet_type, uint16_t channel, uint
                             }
 
                             // emit re-encryption complete
-                            sm_notify_client_reencryption(sm_conn, status);
+                            sm_notify_client_reencryption_complete(sm_conn, status);
 
                             // notify client, if pairing was requested before
                             if (sm_conn->sm_pairing_requested){
