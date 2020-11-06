@@ -745,6 +745,14 @@ static void sm_notify_client_status_reason(sm_connection_t * sm_conn, uint8_t st
     sm_dispatch_event(HCI_EVENT_PACKET, 0, (uint8_t*) &event, sizeof(event));
 }
 
+static void sm_notify_client_reencryption_started(sm_connection_t * sm_conn){
+    uint8_t event[4];
+    event[0] = SM_EVENT_REENCRYPTION_STARTED;
+    event[1] = sizeof(event) - 2;
+    little_endian_store_16(event, 2, sm_conn->sm_handle);
+    sm_dispatch_event(HCI_EVENT_PACKET, 0, (uint8_t*) &event, sizeof(event));
+}
+
 static void sm_notify_client_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
     uint8_t event[5];
     event[0] = SM_EVENT_REENCRYPTION_COMPLETE;
@@ -1252,6 +1260,7 @@ static void sm_address_resolution_handle_event(address_resolution_event_t event)
 #ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
                             log_info("central: enable encryption for bonded device");
                             sm_connection->sm_engine_state = SM_RESPONDER_SEND_SECURITY_REQUEST;
+                            sm_notify_client_reencryption_started(sm_connection);
                             sm_trigger_run();
 #else
                             log_info("central: defer security request for bonded device");
@@ -1273,6 +1282,7 @@ static void sm_address_resolution_handle_event(address_resolution_event_t event)
 #ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
                             log_info("central: enable encryption for bonded device");
                             sm_connection->sm_engine_state = SM_INITIATOR_PH0_HAS_LTK;
+                            sm_notify_client_reencryption_started(sm_connection);
                             break;
 #else
                             log_info("central: defer enabling encryption for bonded device");
