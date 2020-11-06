@@ -622,6 +622,13 @@ static void sm_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
 #endif
 
 static void sm_pairing_complete(sm_connection_t * sm_conn, uint8_t status, uint8_t reason){
+
+#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
+    if (setup->sm_reencryption_active){
+        sm_reencryption_complete(sm_conn, status);
+    }
+#endif
+
     uint8_t event[13];
     sm_setup_event_base(event, sizeof(event), SM_EVENT_PAIRING_COMPLETE, sm_conn->sm_handle, setup->sm_peer_addr_type, setup->sm_peer_address);
     event[11] = status;
@@ -645,13 +652,6 @@ static void sm_timeout_handler(btstack_timer_source_t * timer){
     log_info("SM timeout");
     sm_connection_t * sm_conn = (sm_connection_t*) btstack_run_loop_get_timer_context(timer);
     sm_conn->sm_engine_state = SM_GENERAL_TIMEOUT;
-
-#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
-    if (setup->sm_reencryption_active){
-        sm_reencryption_complete(sm_conn, ERROR_CODE_CONNECTION_TIMEOUT);
-    }
-#endif
-
     sm_pairing_complete(sm_conn, ERROR_CODE_CONNECTION_TIMEOUT, 0);
     sm_done_for_handle(sm_conn->sm_handle);
 
