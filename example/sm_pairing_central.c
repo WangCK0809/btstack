@@ -201,7 +201,7 @@ static void hci_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *p
             // sm_request_pairing(con_handle);
 
             // start GATT query
-            gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
+            // gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
 
             break;
         case HCI_EVENT_ENCRYPTION_CHANGE: 
@@ -261,6 +261,27 @@ static void sm_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *pa
                     break;
                 case ERROR_CODE_AUTHENTICATION_FAILURE:
                     printf("Pairing failed, reason = %u\n", sm_event_pairing_complete_get_reason(packet));
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case SM_EVENT_REENCRYPTION_STARTED:
+            printf("Bonding information exists, start re-encryption\n");
+            break;
+        case SM_EVENT_REENCRYPTION_COMPLETE:
+            switch (sm_event_reencryption_complete_get_status(packet)){
+                case ERROR_CODE_SUCCESS:
+                    printf("Re-encryption complete, success\n");
+                    break;
+                case ERROR_CODE_CONNECTION_TIMEOUT:
+                    printf("Re-encryption failed, timeout\n");
+                    break;
+                case ERROR_CODE_REMOTE_USER_TERMINATED_CONNECTION:
+                    printf("Re-encryption failed, disconnected\n");
+                    break;
+                case ERROR_CODE_AUTHENTICATION_FAILURE:
+                    printf("Re-encryption failed, authentication failure\n");
                     break;
                 default:
                     break;
