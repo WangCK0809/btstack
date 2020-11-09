@@ -594,26 +594,25 @@ static void sm_notify_client_status(uint8_t type, hci_con_handle_t con_handle, u
 
 #ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
 static void sm_reencryption_started(sm_connection_t * sm_conn){
-
     sm_conn->sm_reencryption_active = true;
 
-    uint8_t event[4];
-    event[0] = SM_EVENT_REENCRYPTION_STARTED;
-    event[1] = sizeof(event) - 2;
-    little_endian_store_16(event, 2, sm_conn->sm_handle);
-    sm_dispatch_event(HCI_EVENT_PACKET, 0, (uint8_t*) &event, sizeof(event));
+    // fetch addr and addr type from db, only called for valid entries
+    int       identity_addr_type;
+    bd_addr_t identity_addr;
+    le_device_db_info(sm_conn->sm_le_db_index, &identity_addr_type, identity_addr, NULL);
+
+    sm_notify_client_base(SM_EVENT_REENCRYPTION_STARTED, sm_conn->sm_handle, identity_addr_type, identity_addr);
 }
 
 static void sm_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
-
     sm_conn->sm_reencryption_active = false;
 
-    uint8_t event[5];
-    event[0] = SM_EVENT_REENCRYPTION_COMPLETE;
-    event[1] = sizeof(event) - 2;
-    little_endian_store_16(event, 2, sm_conn->sm_handle);
-    event[4] = status;
-    sm_dispatch_event(HCI_EVENT_PACKET, 0, (uint8_t*) &event, sizeof(event));
+    // fetch addr and addr type from db, only called for valid entries
+    int       identity_addr_type;
+    bd_addr_t identity_addr;
+    le_device_db_info(sm_conn->sm_le_db_index, &identity_addr_type, identity_addr, NULL);
+
+    sm_notify_client_status(SM_EVENT_REENCRYPTION_COMPLETE, sm_conn->sm_handle, identity_addr_type, identity_addr, status);
 }
 #endif
 
