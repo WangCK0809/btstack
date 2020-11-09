@@ -100,6 +100,7 @@ static void sm_pairing_central_setup(void){
 
     // init GATT Client
     gatt_client_init();
+    gatt_client_set_required_security_level(LEVEL_2);
 
     /**
      * Choose ONE of the following configurations
@@ -201,7 +202,7 @@ static void hci_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *p
             // sm_request_pairing(con_handle);
 
             // start GATT query
-            // gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
+            gatt_client_discover_primary_services(&hci_packet_handler, con_handle);
 
             break;
         case HCI_EVENT_ENCRYPTION_CHANGE: 
@@ -231,6 +232,7 @@ static void sm_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *pa
 
     if (packet_type != HCI_EVENT_PACKET) return;
 
+    bd_addr_t addr;
     switch (hci_event_packet_get_type(packet)) {
         case SM_EVENT_JUST_WORKS_REQUEST:
             printf("Just works requested\n");
@@ -267,7 +269,9 @@ static void sm_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t *pa
             }
             break;
         case SM_EVENT_REENCRYPTION_STARTED:
-            printf("Bonding information exists, start re-encryption\n");
+            sm_event_reencryption_complete_get_address(packet, addr);
+            printf("Bonding information exists for addr type %u, identity addr %s -> start re-encryption\n",
+                   sm_event_reencryption_started_get_addr_type(packet), bd_addr_to_str(addr));
             break;
         case SM_EVENT_REENCRYPTION_COMPLETE:
             switch (sm_event_reencryption_complete_get_status(packet)){

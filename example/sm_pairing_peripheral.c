@@ -227,7 +227,9 @@ static void packet_handler (uint8_t packet_type, uint16_t channel, uint8_t *pack
             }
             break;
         case SM_EVENT_REENCRYPTION_STARTED:
-            printf("Bonding information exists, trigger re-encryption\n");
+            sm_event_reencryption_complete_get_address(packet, addr);
+            printf("Bonding information exists for addr type %u, identity addr %s -> trigger re-encryption\n",
+                   sm_event_reencryption_started_get_addr_type(packet), bd_addr_to_str(addr));
             break;
         case SM_EVENT_REENCRYPTION_COMPLETE:
             switch (sm_event_reencryption_complete_get_status(packet)){
