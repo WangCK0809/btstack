@@ -412,6 +412,9 @@ typedef struct sm_connection {
     uint16_t                 sm_local_ediv;
     uint8_t                  sm_local_rand[8];
     int                      sm_le_db_index;
+#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
+    bool                     sm_reencryption_active;
+#endif
 } sm_connection_t;
 
 //

@@ -370,10 +370,6 @@ typedef struct sm_setup_context {
 #ifdef ENABLE_LE_SIGNED_WRITE
     int       sm_le_device_index;
 #endif
-
-#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
-    bool      sm_reencryption_active;
-#endif
 } sm_setup_context_t;
 
 //
@@ -599,7 +595,7 @@ static void sm_notify_client_status(uint8_t type, hci_con_handle_t con_handle, u
 #ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
 static void sm_reencryption_started(sm_connection_t * sm_conn){
 
-    setup->sm_reencryption_active = true;
+    sm_conn->sm_reencryption_active = true;
 
     uint8_t event[4];
     event[0] = SM_EVENT_REENCRYPTION_STARTED;
@@ -610,7 +606,7 @@ static void sm_reencryption_started(sm_connection_t * sm_conn){
 
 static void sm_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
 
-    setup->sm_reencryption_active = false;
+    sm_conn->sm_reencryption_active = false;
 
     uint8_t event[5];
     event[0] = SM_EVENT_REENCRYPTION_COMPLETE;
@@ -624,7 +620,7 @@ static void sm_reencryption_complete(sm_connection_t * sm_conn, uint8_t status){
 static void sm_pairing_complete(sm_connection_t * sm_conn, uint8_t status, uint8_t reason){
 
 #ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
-    if (setup->sm_reencryption_active){
+    if (sm_conn->sm_reencryption_active){
         sm_reencryption_complete(sm_conn, status);
     }
 #endif
@@ -1106,9 +1102,6 @@ static void sm_reset_setup(void){
     setup->sm_state_vars = 0;
     setup->sm_keypress_notification = 0;
     sm_reset_tk();
-#ifdef ENABLE_LE_PROACTIVE_AUTHENTICATION
-    setup->sm_reencryption_active = false;
-#endif
 }
 
 static void sm_init_setup(sm_connection_t * sm_conn){
